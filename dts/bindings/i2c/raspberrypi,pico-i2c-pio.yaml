@@ -1,0 +1,24 @@
+# Copyright (c) 2023 Stephen Boylan <stephen.boylan@beechwoods.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: Raspberry Pi Pico i2c via PIO
+
+compatible: "raspberrypi,pico-i2c-pio"
+
+include: ["i2c-controller.yaml", "raspberrypi,pico-pio-device.yaml", "reset-device.yaml"]
+
+properties:
+  sda-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      I/O pin for data
+
+  scl-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      I/O pin for clock
+
+  clocks:
+    required: true
