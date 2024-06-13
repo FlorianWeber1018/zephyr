@@ -58,8 +58,7 @@ int akm09918c_start_measurement(const struct device *dev, enum sensor_channel ch
  * @param z Location to write Z channel sample.
  * @return int 0 if successful or error code
  */
-int akm09918c_fetch_measurement(const struct device *dev, int16_t *x,
-				int16_t *y, int16_t *z)
+int akm09918c_fetch_measurement(const struct device *dev, int16_t *x, int16_t *y, int16_t *z)
 {
 	const struct akm09918c_config *cfg = dev->config;
 	uint8_t buf[9] = {0};
@@ -94,8 +93,7 @@ static int akm09918c_sample_fetch(const struct device *dev, enum sensor_channel 
 	LOG_DBG("Waiting for sample...");
 	k_usleep(AKM09918C_MEASURE_TIME_US);
 
-	return akm09918c_fetch_measurement(dev, &data->x_sample, &data->y_sample,
-					   &data->z_sample);
+	return akm09918c_fetch_measurement(dev, &data->x_sample, &data->y_sample, &data->z_sample);
 }
 
 static void akm09918c_convert(struct sensor_value *val, int16_t sample)
@@ -231,7 +229,6 @@ static int akm09918c_init(const struct device *dev)
 	}
 	data->mode = AKM09918C_CNTL2_PWR_DOWN;
 #ifdef CONFIG_SENSOR_ASYNC_API
-	data->work_ctx.dev = dev;
 	/* init work for fetching after measurement has completed */
 	k_work_init_delayable(&data->work_ctx.async_fetch_work, akm09918_async_fetch);
 #endif

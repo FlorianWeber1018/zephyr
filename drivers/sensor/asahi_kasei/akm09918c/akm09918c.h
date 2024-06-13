@@ -35,11 +35,10 @@ struct akm09918c_data {
 	int16_t z_sample;
 	uint8_t mode;
 #ifdef CONFIG_SENSOR_ASYNC_API
-	struct akm09918c_async_fetch_ctx{
+	struct akm09918c_async_fetch_ctx {
 		struct rtio_iodev_sqe *iodev_sqe;
 		uint64_t timestamp;
 		struct k_work_delayable async_fetch_work;
-		const struct device *dev;
 	} work_ctx;
 #endif
 };
@@ -84,8 +83,7 @@ static inline void akm09918c_reg_to_hz(uint8_t reg, struct sensor_value *val)
 }
 int akm09918c_start_measurement(const struct device *dev, enum sensor_channel chan);
 
-int akm09918c_fetch_measurement(const struct device *dev, int16_t *x,
-				int16_t *y, int16_t *z);
+int akm09918c_fetch_measurement(const struct device *dev, int16_t *x, int16_t *y, int16_t *z);
 /*
  * RTIO types
  */
@@ -104,6 +102,5 @@ void akm09918_async_fetch(struct k_work *work);
 int akm09918c_get_decoder(const struct device *dev, const struct sensor_decoder_api **decoder);
 
 int akm09918c_submit(const struct device *dev, struct rtio_iodev_sqe *iodev_sqe);
-
 
 #endif /* ZEPHYR_DRIVERS_SENSOR_AKM09918C_AKM09918C_H_ */

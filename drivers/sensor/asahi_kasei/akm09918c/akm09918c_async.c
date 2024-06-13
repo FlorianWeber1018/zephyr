@@ -14,7 +14,8 @@ void akm09918_async_fetch(struct k_work *work)
 	struct k_work_delayable *dwork = k_work_delayable_from_work(work);
 	struct akm09918c_async_fetch_ctx *ctx =
 		CONTAINER_OF(dwork, struct akm09918c_async_fetch_ctx, async_fetch_work);
-
+	const struct sensor_read_config *cfg = ctx->iodev_sqe->sqe.iodev->data;
+	const struct device *dev = cfg->sensor;
 	uint32_t req_buf_len = sizeof(struct akm09918c_encoded_data);
 	uint32_t buf_len;
 	uint8_t *buf;
@@ -29,7 +30,7 @@ void akm09918_async_fetch(struct k_work *work)
 		return;
 	}
 	edata = (struct akm09918c_encoded_data *)buf;
-	rc = akm09918c_fetch_measurement(ctx->dev, &edata->readings[0], &edata->readings[1],
+	rc = akm09918c_fetch_measurement(dev, &edata->readings[0], &edata->readings[1],
 					 &edata->readings[2]);
 	if (rc != 0) {
 		rtio_iodev_sqe_err(ctx->iodev_sqe, rc);
