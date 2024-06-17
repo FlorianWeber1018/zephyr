@@ -43,7 +43,6 @@ void akm09918c_submit(const struct device *dev, struct rtio_iodev_sqe *iodev_sqe
 {
 	int rc;
 	struct akm09918c_data *data = dev->data;
-	const struct sensor_read_config *cfg = iodev_sqe->sqe.iodev->data;
 
 	/* start the measurement in the sensor */
 	rc = akm09918c_start_measurement(dev, SENSOR_CHAN_MAGN_XYZ);
