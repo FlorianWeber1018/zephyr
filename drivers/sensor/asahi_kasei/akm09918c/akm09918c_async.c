@@ -39,7 +39,7 @@ void akm09918_async_fetch(struct k_work *work)
 	rtio_iodev_sqe_ok(ctx->iodev_sqe, 0);
 }
 
-int akm09918c_submit(const struct device *dev, struct rtio_iodev_sqe *iodev_sqe)
+void akm09918c_submit(const struct device *dev, struct rtio_iodev_sqe *iodev_sqe)
 {
 	int rc;
 	struct akm09918c_data *data = dev->data;
@@ -70,7 +70,6 @@ int akm09918c_submit(const struct device *dev, struct rtio_iodev_sqe *iodev_sqe)
 		LOG_ERR("The last fetch has not finished yet. "
 			"Try again later when the last sensor read operation has finished.");
 		rtio_iodev_sqe_err(iodev_sqe, -EBUSY);
-		return;
 	}
-	return 0;
+	return;
 }
