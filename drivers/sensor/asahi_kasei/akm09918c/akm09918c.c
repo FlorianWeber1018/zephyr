@@ -86,6 +86,7 @@ static int akm09918c_sample_fetch(const struct device *dev, enum sensor_channel 
 	struct akm09918c_data *data = dev->data;
 
 	int ret = akm09918c_start_measurement(dev, chan);
+
 	if (ret) {
 		return ret;
 	}

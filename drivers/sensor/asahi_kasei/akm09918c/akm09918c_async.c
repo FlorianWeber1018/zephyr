@@ -43,18 +43,10 @@ void akm09918c_submit(const struct device *dev, struct rtio_iodev_sqe *iodev_sqe
 {
 	int rc;
 	struct akm09918c_data *data = dev->data;
-
 	const struct sensor_read_config *cfg = iodev_sqe->sqe.iodev->data;
 
-	/* check for invalid channel count (only 1 channel is supported yet) */
-	if (cfg->count != 1) {
-		LOG_ERR("More than one channel is not yet supported by the driver.");
-		rtio_iodev_sqe_err(iodev_sqe, -ENOTSUP);
-		return;
-	}
-
 	/* start the measurement in the sensor */
-	rc = akm09918c_start_measurement(dev, cfg->channels[0].chan_type);
+	rc = akm09918c_start_measurement(dev, SENSOR_CHAN_MAGN_XYZ);
 	if (rc != 0) {
 		LOG_ERR("Failed to fetch samples.");
 		rtio_iodev_sqe_err(iodev_sqe, rc);
