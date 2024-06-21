@@ -43,6 +43,25 @@ void akm09918c_submit(const struct device *dev, struct rtio_iodev_sqe *iodev_sqe
 {
 	int rc;
 	struct akm09918c_data *data = dev->data;
+	const struct sensor_read_config *cfg = iodev_sqe->sqe.iodev->data;
+	const struct sensor_chan_spec *const channels = cfg->channels;
+	const size_t num_channels = cfg->count;
+
+	/* Check if the requested channels are supported */
+	for (size_t i = 0; i < num_channels; i++) {
+		switch (channels[i].chan_type) {
+		case SENSOR_CHAN_MAGN_X:
+		case SENSOR_CHAN_MAGN_Y:
+		case SENSOR_CHAN_MAGN_Z:
+		case SENSOR_CHAN_MAGN_XYZ:
+		case SENSOR_CHAN_ALL:
+			break;
+		default:
+			LOG_ERR("Unsupported channel type %d", channels[i].chan_type);
+			rtio_iodev_sqe_err(iodev_sqe, -ENOTSUP);
+			return;
+		}
+	}
 
 	/* start the measurement in the sensor */
 	rc = akm09918c_start_measurement(dev, SENSOR_CHAN_MAGN_XYZ);
