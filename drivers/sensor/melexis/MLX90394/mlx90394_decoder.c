@@ -4,25 +4,25 @@
  */
 
 #include "mlx90394.h"
+#include <zephyr/drivers/sensor.h>
 
 #define DT_DRV_COMPAT melexis_mlx90394
 
-static int mlx90394_decoder_get_frame_count(const uint8_t *buffer, enum sensor_channel channel,
-					    size_t channel_idx, uint16_t *frame_count)
+static int mlx90394_decoder_get_frame_count(const uint8_t *buffer, struct sensor_chan_spec channel,
+					    uint16_t *frame_count)
 {
 	ARG_UNUSED(buffer);
 	ARG_UNUSED(channel);
-	ARG_UNUSED(channel_idx);
 
 	/* This sensor lacks a FIFO; there will always only be one frame at a time. */
 	*frame_count = 1;
 	return 0;
 }
 
-static int mlx90394_decoder_get_size_info(enum sensor_channel channel, size_t *base_size,
+static int mlx90394_decoder_get_size_info(struct sensor_chan_spec channel, size_t *base_size,
 					  size_t *frame_size)
 {
-	switch (channel) {
+	switch (channel.chan_type) {
 	case SENSOR_CHAN_MAGN_X:
 	case SENSOR_CHAN_MAGN_Y:
 	case SENSOR_CHAN_MAGN_Z:
@@ -71,9 +71,8 @@ static int mlx90394_convert_raw_temp_to_q31(int16_t reading, q31_t *out)
 	return 0;
 }
 
-static int mlx90394_decoder_decode(const uint8_t *buffer, enum sensor_channel channel,
-				   size_t channel_idx, uint32_t *fit, uint16_t max_count,
-				   void *data_out)
+static int mlx90394_decoder_decode(const uint8_t *buffer, struct sensor_chan_spec channel,
+				   uint32_t *fit, uint16_t max_count, void *data_out)
 {
 	const struct mlx90394_encoded_data *edata = (const struct mlx90394_encoded_data *)buffer;
 
@@ -81,7 +80,7 @@ static int mlx90394_decoder_decode(const uint8_t *buffer, enum sensor_channel ch
 		return 0;
 	}
 
-	switch (channel) {
+	switch (channel.chan_type) {
 	case SENSOR_CHAN_MAGN_X:
 	case SENSOR_CHAN_MAGN_Y:
 	case SENSOR_CHAN_MAGN_Z:
